@@ -8,8 +8,10 @@ import string
 import file_operations as mf
 from dialogue import Dialogue
 
-
+# Globals
 bg_color = "#424142"
+logo_path = 'logo\eliselogo.ico'
+
 
 class PWWatcher():
     
@@ -22,7 +24,7 @@ class PWWatcher():
         self.root_win.title("PWWatcher")
         self.root_win.geometry("1080x720")
         self.root_win.minsize(480,360)
-        self.root_win.iconbitmap('eliselogo.ico')
+        self.root_win.iconbitmap(logo_path)
 
         # set the color -> can add option to change it ?
         self.root_win.config(background=bg_color)
@@ -109,7 +111,7 @@ class Password_entry(Dialogue) :
         Define the cover of the dialog window
         """
         # Defines the look of the dialog window
-        self.iconbitmap('eliselogo.ico')
+        self.iconbitmap(logo_path)
         self.geometry("360x240")
         self.minsize(230,100)
         self.maxsize(480,360)

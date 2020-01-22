@@ -1,10 +1,12 @@
 import tkinter as tk
-from tkinter import filedialog, Text
+from tkinter import filedialog, Text,ttk
+from tkinter.messagebox import askyesno
 import os 
 from random import randint, choice
 import string
-# import file_operations as mf
 
+import file_operations as mf
+from dialogue import Dialogue
 
 
 bg_color = "#424142"
@@ -12,81 +14,202 @@ bg_color = "#424142"
 class PWWatcher():
     
     def __init__(self):
-        self.root_window = tk.Tk()
-        self.root_window.title("PWWatcher")
-        self.root_window.geometry("1080x720")
-        self.root_window.minsize(480,360)
-        self.root_window.iconbitmap('eliselogo.ico')
-        self.root_window.config(background=bg_color)
+        """
+        Initialisation of the main window ( or root win)
+        """
+        # Creates the tk window, name it, set its geo and add the icone
+        self.root_win = tk.Tk()
+        self.root_win.title("PWWatcher")
+        self.root_win.geometry("1080x720")
+        self.root_win.minsize(480,360)
+        self.root_win.iconbitmap('eliselogo.ico')
 
-        # Creat menu bar 
-        self.menu_bar = tk.Menu(self.root_window)
+        # set the color -> can add option to change it ?
+        self.root_win.config(background=bg_color)
+        # if you want u can place a method quit 
+        self.root_win.protocol("WM_DELETE_WINDOW",self.root_win.quit)
+        # Creates menu bar 
+        self.AddMenuBar()
+
+        # Add existing password stored (in the associated file) 
+        # in the main view 
+        self.DisplayPasswords()
+        
+
+
+    def DisplayPasswords(self):
+        """
+        Method which displays all the initially stored passwords
+        in the main windows -> uses the method DisplayPassword
+        """
+
+        # passwords = mf.loading_pw()
+        self.aff_pw = tk.Frame(self.root_win,bg = bg_color,bd=1,relief = 'ridge')
+        self.aff_pw.place(relwidth = 0.8,relheight =1,relx=0.2)
+        passwords = [mf.Password(site='site1') , mf.Password(site='site2') ]
+
+        for password in passwords:
+            label = tk.Label(self.aff_pw,text = password.site,
+                    bg=bg_color, fg ='white' , bd =1,relief = 'ridge')
+            label.pack()
+        #######################################################
+    
+
+    def DisplayPassword(self):
+        """
+        Method to generate a frame for a password
+        """
+        pass
+
+    def AddMenuBar(self):
+        """
+        Adds a menu bar with the menus u want
+        """
+        self.menu_bar = tk.Menu(self.root_win)
         self.menu_file = tk.Menu(self.menu_bar,tearoff=0)
-        self.menu_file.add_command(label='New password', command =self.open_pwwin )
+        self.menu_file.add_command(label='New password', command =self.popPWEntry )
         self.menu_file.add_command(label='edit' ) #, command=edit_password)
         self.menu_file.add_command(label='delete') #, command=delete_password)
         self.menu_bar.add_cascade(label="File",menu = self.menu_file)
         # Adding the menu to the window
-        self.root_window.config(menu=self.menu_bar)
-
-        # Loading the existing password if existing
-        # passwords = mf.loading_pw()
+        self.root_win.config(menu=self.menu_bar)
 
 
 
-
+    def affPw(self):
+        """ 
+        function to generate the common display for a password 
+        with its site etc
+        """
+    
+    def popPWEntry(self):
+        """
+        pop the window where to add or gen a password which is a dialog
+        window of the class Password_entry which itself herites from dialogue
+        """
+        d = Password_entry(self.root_win, title = "Add a new password",
+                                offx= 150,offy=100) 
         
-    def open_pwwin(self):
-        # configuration nouvelle fenêtre
-        newwin = tk.Tk()
-        newwin.title("Add a password ")
-        newwin.geometry("360x240")
-        newwin.minsize(72,48)
-        newwin.maxsize(480,360)
-        newwin.iconbitmap('eliselogo.ico')
-        newwin.config(background=bg_color)
+        return d.resultat
 
-        #Add labels
-        NameLabel = tk.Label(newwin, text = "Name : ",bg = bg_color,fg ='white')
+
+    def quit(self):
+        # if askyesno("quitter l'application", "voulez vous quitter l'application?"):
+        self.root_win.quit()
+
+
+
+
+
+
+class Password_entry(Dialogue) :
+
+    def cover(self,cont):
+        """
+        Define the cover of the dialog window
+        """
+        # Defines the look of the dialog window
+        self.iconbitmap('eliselogo.ico')
+        self.geometry("360x240")
+        self.minsize(230,100)
+        self.maxsize(480,360)
+        self.config(background=bg_color)
+        cont.config(background=bg_color)
+        # Labels
+        NameLabel = tk.Label(cont, text = "Name : ",bg = bg_color,fg ='white')
         NameLabel.grid(row = 1,column =1,pady=5)
-        SiteLabel = tk.Label(newwin, text = "url (opt) : ",bg = bg_color,fg ='white')
+        SiteLabel = tk.Label(cont, text = "url (opt) : ",bg = bg_color,fg ='white')
         SiteLabel.grid(row=2,column=1,pady =5)
-        PwLabel = tk.Label(newwin,text = "Password : ", bg = bg_color,fg ='white')
+        PwLabel = tk.Label(cont,text = "Password : ", bg = bg_color,fg ='white')
         PwLabel.grid(row=3 , column=1,pady=5)
-        # Add thir corresponding input
-        NameEntry = tk.Entry(newwin)
-        NameEntry.grid(row=1, column=2)
-        SiteEntry = tk.Entry(newwin)
-        SiteEntry.grid(row=2,column=2)
-        PwEntry = tk.Entry(newwin)
-        PwEntry.grid(row=3 , column=2)
+        # Add their corresponding input
+        self.NameEntry = tk.Entry(cont)
+        self.NameEntry.grid(row=1, column=2)
+        self.SiteEntry = tk.Entry(cont)
+        self.SiteEntry.grid(row=2,column=2)
+        self.PwEntry = tk.Entry(cont)
+        self.PwEntry.grid(row=3 , column=2)
         
-
-
+        return self.NameEntry
 
         
+    def apply(self):
+        """
+        Method which gets the entered infos and return  them as a 
+        Password object
+        """
+        name = self.NameEntry.get()
+        url = self.SiteEntry.get()
+        pw = self.PwEntry.get()
+        self.resultat = mf.Password(site=name , link = url,password = pw)
+        print(self.resultat)
 
-
+    def boitBoutons(self):
+        """
+        Method which adds buttons to get infos and generate pw or quit
+        """
+        boite = tk.LabelFrame(self, text="") 
+        boite.config(background = self.color)
+        # add the entered info to the db 
+        w1 = tk.Button(boite, text = "Add.", width = 10,
+                           command = self.ok, default = tk.ACTIVE)
+        w1.pack(side=tk.LEFT, padx = 5, pady = 5)       
+        # Generate password button
+        w2 = tk.Button(boite, text = 'Generate', width=10,
+                            command = self.generate_password)
+        w2.pack(side = tk.LEFT, padx=5,pady=5)
+        # Cancel button
+        w3 = tk.Button(boite, text = "Cancel", width = 10,
+                            command = self.cancel)
+        w3.pack(side=tk.LEFT, padx = 5, pady = 5)       
+        
+        self.bind("<Return>", self.ok)     
+        self.bind("<Escape>", self.cancel)        
+        boite.pack()        
+        return w1
+    
     def generate_password(self,nb_char=10):
+        """
+        Methods to easily generate random password using string
+        """
+
         all_chars = string.ascii_letters + string.punctuation + string.digits
         password = "".join( choice(all_chars) for x in range(nb_char) )
+        self.PwEntry.delete(0,tk.END)
+        self.PwEntry.insert(0,password)
         return password
-    
-    
 
+ 
+
+ 
+
+        
+
+
+
+
+   # # # test onglets
+        # self.notebook = ttk.Notebook(self.root_win)
+        # self.notebook.pack(side ='bottom')
     
+        # self.aff_pw = ttk.Frame(self.notebook)
+        # self.add_pw = ttk.Frame(self.notebook)
+        # self.aff_pw.pack()
+        # self.add_pw.pack()
 
-
-
-    
+        # self.notebook.add(self.aff_pw,text='Main')
+        # self.notebook.add(self.add_pw,text = 'Add password')
+        # # #   
 
 
 if __name__ == "__main__":
     # instanciation 
     app = PWWatcher()
     # affichage de la fenêtre principale
-    app.root_window.mainloop()
+    app.root_win.mainloop()
+    app.root_win.destroy()
 
 
 
-# don't forget to make the exe with pyinstaller --onefile pythonScriptName.py
+# don't forget to make the exe with :
+# pyinstaller --onefile pythonScriptName.py

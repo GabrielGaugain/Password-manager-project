@@ -66,23 +66,24 @@ class Dialogue(tk.Toplevel):
 
 
     def boitBoutons(self):
-        boite = tk.LabelFrame(self, text="Valider") 
-        boite.config(background = self.color)
-        w1 = tk.Button(boite, text = "Add.", width = 10,
-                            command = self.ok, default = tk.ACTIVE)
-        w1.pack(side=tk.LEFT, padx = 5, pady = 5)       
+        pass
+        # boite = tk.LabelFrame(self, text="Valider") 
+        # boite.config(background = self.color)
+        # w1 = tk.Button(boite, text = "Add.", width = 10,
+        #                     command = self.ok, default = tk.ACTIVE)
+        # w1.pack(side=tk.LEFT, padx = 5, pady = 5)       
         
-        w2 = tk.Button(boite, text = 'Generate', width=10,
-                            command = self.generate_pw)
-        w2.pack(side = tk.LEFT, padx=5,pady=5)
+        # w2 = tk.Button(boite, text = 'Generate', width=10,
+        #                     command = self.generate_pw)
+        # w2.pack(side = tk.LEFT, padx=5,pady=5)
 
-        w3 = tk.Button(boite, text = "Cancel", width = 10,
-                            command = self.cancel)
-        w3.pack(side=tk.LEFT, padx = 5, pady = 5)       
-        self.bind("<Return>", self.ok)       
-        self.bind("<Escape>", self.cancel)        
-        boite.pack()        
-        return w1
+        # w3 = tk.Button(boite, text = "Cancel", width = 10,
+        #                     command = self.cancel)
+        # w3.pack(side=tk.LEFT, padx = 5, pady = 5)       
+        # self.bind("<Return>", self.ok)       
+        # self.bind("<Escape>", self.cancel)        
+        # boite.pack()        
+        # return w1
 
     def ok(self, event = None):
         self.initial_focus.focus_set()

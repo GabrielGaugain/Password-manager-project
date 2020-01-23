@@ -33,10 +33,13 @@ class PWWatcher():
         # Creates menu bar 
         self.AddMenuBar()
 
-        # Add existing password stored (in the associated file) 
-        # in the main view 
+        ## Add existing password stored (in the associated file) 
+        ## in the main view 
         self.DisplayPasswords()
-        
+    ##############################  END INIT ######################    
+
+
+    ############# Affichage principal des mots de pass  ################
 
 
     def DisplayPasswords(self):
@@ -44,46 +47,47 @@ class PWWatcher():
         Method which displays all the initially stored passwords
         in the main windows -> uses the method DisplayPassword
         """
+        # Frame on which to put the pws
+        self.frame_pw = tk.Frame(self.root_win,bg = bg_color,bd=1,relief = 'ridge')
+        self.frame_pw.place(relwidth = 0.8,relheight =1,relx=0.2)
 
-        # passwords = mf.loading_pw()
-        self.aff_pw = tk.Frame(self.root_win,bg = bg_color,bd=1,relief = 'ridge')
-        self.aff_pw.place(relwidth = 0.8,relheight =1,relx=0.2)
+        # Load Existing passwords
+        # passwords = mf.loading_pw()  
         passwords = [mf.Password(site='site1') , mf.Password(site='site2') ]
 
         for password in passwords:
-            label = tk.Label(self.aff_pw,text = password.site,
-                    bg=bg_color, fg ='white' , bd =1,relief = 'ridge')
-            label.pack()
-        #######################################################
-    
+            self.DisplayPassword(password )
+        
+            
 
-    def DisplayPassword(self):
+
+    def DisplayPassword(self,password):
         """
-        Method to generate a frame for a password
-        """
-        pass
-
-    def AddMenuBar(self):
-        """
-        Adds a menu bar with the menus u want
-        """
-        self.menu_bar = tk.Menu(self.root_win)
-        self.menu_file = tk.Menu(self.menu_bar,tearoff=0)
-        self.menu_file.add_command(label='New password', command =self.popPWEntry )
-        self.menu_file.add_command(label='edit' ) #, command=edit_password)
-        self.menu_file.add_command(label='delete') #, command=delete_password)
-        self.menu_bar.add_cascade(label="File",menu = self.menu_file)
-        # Adding the menu to the window
-        self.root_win.config(menu=self.menu_bar)
-
-
-
-    def affPw(self):
-        """ 
-        function to generate the common display for a password 
+        Method to generate the common display for a password 
         with its site etc
         """
-    
+        label = tk.Label(self.frame_pw,text = password.site,
+                    bg=bg_color, fg ='white' , bd =1,relief = 'ridge')
+        label.pack()
+        
+
+    ############################################################################
+
+
+    def AddMenuBar(self):
+            """
+            Adds a menu bar with the menus u want
+            """
+            self.menu_bar = tk.Menu(self.root_win)
+            self.menu_file = tk.Menu(self.menu_bar,tearoff=0)
+            self.menu_file.add_command(label='New password', command =self.popPWEntry )
+            self.menu_file.add_command(label='edit' ) #, command=edit_password)
+            self.menu_file.add_command(label='delete') #, command=delete_password)
+            self.menu_bar.add_cascade(label="File",menu = self.menu_file)
+            # Adding the menu to the window
+            self.root_win.config(menu=self.menu_bar)
+
+
     def popPWEntry(self):
         """
         pop the window where to add or gen a password which is a dialog

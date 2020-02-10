@@ -1,18 +1,24 @@
 import tkinter as tk
-from tkinter import filedialog, Text,ttk
+import tkinter.tix as tix
+from tkinter import filedialog, Text,ttk, N,S,E,W
 from tkinter.messagebox import askyesno
 import os 
 from random import randint, choice
 import string
-
+import sys
 import file_operations as mf
 from dialogue import Dialogue
 
 # Globals
+if sys.platform.startswith('win'):
+    logo_path = 'logo\eliselogo.ico'
+elif sys.platform.startswith('linux')
+    logo_path = 'logo\eliselogo.xbm'
+
 bg_color = "#424142"
-logo_path = 'logo\eliselogo.ico'
 
 
+# Start to code the GUI
 class PWWatcher():
     
     def __init__(self):
@@ -47,32 +53,46 @@ class PWWatcher():
         Method which displays all the initially stored passwords
         in the main windows -> uses the method DisplayPassword
         """
+        self.SBar = tk.Scrollbar(self.root_win)
+        self.SBar.pack(side = tk.RIGHT, fill='y')
+    
         # Frame on which to put the pws
-        self.frame_pw = tk.Frame(self.root_win,bg = bg_color,bd=1,relief = 'ridge')
-        self.frame_pw.place(relwidth = 0.8,relheight =1,relx=0.2)
-
+        # self.frame_pw = tk.Frame(self.root_win,bg = bg_color,bd=1,relief = 'ridge')
+        # self.frame_pw = tk.Canvas(self.root_win,bg = bg_color,yscrollcommand= self.SBar.set )
+        # self.frame_pw.grid(row=0, column=0, sticky=N+S+E+W)
+        # self.frame_pw.place(relwidth = 0.85,relheight =1,relx=0.135)
+        # self.SBar.config(command=self.frame_pw.yview)
         # Load Existing passwords
         # passwords = mf.loading_pw()  
         passwords = [mf.Password(site='site1') , mf.Password(site='site2') ]
-
-        for password in passwords:
-            self.DisplayPassword(password )
+        mf.test_key("bonsoirEliot")
+        for i , password in enumerate(passwords):
+            self.DisplayPassword(password,i )
         
             
-
-
-    def DisplayPassword(self,password):
+    def DisplayPassword(self,password,n):
         """
         Method to generate the common display for a password 
         with its site etc
         """
-        label = tk.Label(self.frame_pw,text = password.site,
-                    bg=bg_color, fg ='white' , bd =1,relief = 'ridge')
-        label.pack()
+        onepwframe = tk.Frame(self.root_win,bg=bg_color,bd=1,relief = 'ridge')
+        onepwframe.pack(fill=tk.BOTH)
+        labelName = tk.Label(onepwframe,text = password.site,
+                    bg=bg_color, fg ='white' )
+        labelName.grid(row = n, column =1)
+        buttonSite = tk.Button(onepwframe, text = 'link', bg = bg_color,
+                            fg='white', bd=0 )
+        buttonSite.grid(row=n,column=2)
+
+        labelPw = tk.Label(onepwframe,text = password.password,
+                            fg = 'white')
+        labelPw.grid(row=n,column=3)
+
+        
+        
         
 
     ############################################################################
-
 
     def AddMenuBar(self):
             """
@@ -87,7 +107,6 @@ class PWWatcher():
             # Adding the menu to the window
             self.root_win.config(menu=self.menu_bar)
 
-
     def popPWEntry(self):
         """
         pop the window where to add or gen a password which is a dialog
@@ -98,13 +117,15 @@ class PWWatcher():
         
         return d.resultat
 
-
     def quit(self):
         # if askyesno("quitter l'application", "voulez vous quitter l'application?"):
         self.root_win.quit()
 
 
+class Password_Display(tk.Listbox):
+    def __init__(self):
 
+        pass
 
 
 

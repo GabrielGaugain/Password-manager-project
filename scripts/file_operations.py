@@ -12,19 +12,20 @@ class Password:
         self.site = site
         self.link = link
         self.password = password
+        self._IV = Random.new().read(16)
 
     def __str__(self):
         return 'site :' + self.site +'\nlink :'+self.link + '\npassword :'+ self.password +'\n'
 
 
-    def _encrypt_pw(self,key,IV):
+    def _encrypt_pw(self,key):
         """
         Encrypt the password using pycrypto module and the AES 
         encryption algorithm.
         For a good tutorial see DrapsTV on youtube in advanced python playlist
         """
-        # IV = Random.new().read(16) -> doit être stocker a un endroit safe
 
+        IV = self._IV
         encryptor = AES.new(key, AES.MODE_CBC,IV)
         ## the len of the string should be multiple of 16 for this algo
         if len(self.password)%16 !=0:
@@ -60,13 +61,15 @@ def save_pw(pw_list):
         pickle.dump(pw_list,f,pickle.HIGHEST_PROTOCOL)
         
 
-def getHashedKey():
-    """
-    Get the hashed key choosen at the begining
-    """
-
-
-    return hashed_key        
+# def getHashedKey(dir = os.getcwd()):
+#     """
+#     Get the hashed key choosen at the begining
+#     """
+#     dir  = os.path.join(dir,'.config')
+#     with open(os.path.join(dir,'config_file.txt'),'w') as f:
+#         a = f.read()
+#     hashed_key = 'To be coded'
+#     return hashed_key        
 
 
 
@@ -75,16 +78,22 @@ def test_key(entry):
     Test if the admin password (used to encrypt and decrypt
     passwords) is the one chosen by admin at the begining
     """
-    # Get the hashed good key
-    hashed_key = getHashedKey()
+    # Get all hash txt file containing the key
+    dir  = os.path.join(dir,'.config')
+    with open(os.path.join(dir,'config_file.txt'),'w') as f:
+        a = f.read()
+
     # Now hash the entered key
     hasher = SHA256.new(entry.encode('utf-8'))
     entry_hash = hasher.digest()
     print(entry_hash)
     
-    if hashed_key == entry_hash:
-        print('ok, it seems you have the admin pw')
 
+    if entry_hash in a :
+        print('ok, it seems you have the admin pw')
+        return entry_hash
+    
+    return []
 
 
 

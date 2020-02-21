@@ -1,20 +1,22 @@
+import os 
+import sys
+
+# Tkinter imports
 import tkinter as tk
 import tkinter.tix as tix
 from tkinter import filedialog, Text,ttk, N,S,E,W
 from tkinter.messagebox import askyesno
-import os 
+
+# Import to simply generate pw
 from random import randint, choice
 import string
-import sys
+
+#modules import
 import file_operations as mf
 from dialogue import Dialogue
 
 # Globals
-if sys.platform.startswith('win'):
-    logo_path = 'logo\eliselogo.ico'
-elif sys.platform.startswith('linux')
-    logo_path = 'logo\eliselogo.xbm'
-
+logo_path = 'logo\eliselogo.ico'
 bg_color = "#424142"
 
 
@@ -30,7 +32,9 @@ class PWWatcher():
         self.root_win.title("PWWatcher")
         self.root_win.geometry("1080x720")
         self.root_win.minsize(480,360)
-        self.root_win.iconbitmap(logo_path)
+        if sys.platform.startswith('win'):
+            self.root_win.iconbitmap(logo_path)
+
 
         # set the color -> can add option to change it ?
         self.root_win.config(background=bg_color)
@@ -136,7 +140,8 @@ class Password_entry(Dialogue) :
         Define the cover of the dialog window
         """
         # Defines the look of the dialog window
-        self.iconbitmap(logo_path)
+        if sys.platform.startswith('win'):
+            self.iconbitmap(logo_path)
         self.geometry("360x240")
         self.minsize(230,100)
         self.maxsize(480,360)
@@ -227,6 +232,8 @@ class Password_entry(Dialogue) :
         # self.notebook.add(self.aff_pw,text='Main')
         # self.notebook.add(self.add_pw,text = 'Add password')
         # # #   
+
+
 
 
 if __name__ == "__main__":

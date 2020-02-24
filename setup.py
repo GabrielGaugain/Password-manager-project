@@ -1,13 +1,14 @@
 from setuptools import setup
-import initialization
+from scripts import initialization
 import os
 
 ### Initiates the admin password 
-initialization.Add_the_Admin_Key()
+if not os.path.isfile(".config/config_file"):
+    initialization.Add_the_Admin_Key()
 
 # List of scripts to add to make the package
-list_scripts = [ f for f in os.listdir('scripts/') if os.path.isfile(os.path.join('scripts/',f)) ]
-
+# list_scripts = [ f for f in os.listdir('scripts/') if os.path.isfile(os.path.join('scripts/',f)) ]
+list_scripts = [ "set_interface.py","dialogue.py","file_operations.py"]
 scripts = [os.path.join('scripts/',scriptname) for scriptname in list_scripts]
 
 setup(

@@ -79,14 +79,15 @@ def test_key(entry):
     passwords) is the one chosen by admin at the begining
     """
     # Get all hash txt file containing the key
+    dir = os.getcwd()
     dir  = os.path.join(dir,'.config')
-    with open(os.path.join(dir,'config_file.txt'),'w') as f:
+    with open(os.path.join(dir,'config_file'),'rb') as f:
         a = f.read()
 
     # Now hash the entered key
     hasher = SHA256.new(entry.encode('utf-8'))
     entry_hash = hasher.digest()
-    print(entry_hash)
+    # print(entry_hash)
     
 
     if entry_hash in a :
@@ -106,3 +107,7 @@ if __name__ == "__main__":
 
     bankpw = [one_pw,another_pw,last_pw]
     print(bankpw[0])
+
+    # test test_entry
+    print(test_key("hello"))
+    print(test_key("Fi122346914.Gg"))

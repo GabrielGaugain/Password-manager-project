@@ -8,14 +8,15 @@ from Crypto import Random
 
 class Password:
 
-    def __init__(self,site='',link='',password=''):
+    def __init__(self,site='',username='',link='',password=''):
         self.site = site
         self.link = link
+        self.username = username
         self.password = password
         self._IV = Random.new().read(16)
 
     def __str__(self):
-        return 'site :' + self.site +'\nlink :'+self.link + '\npassword :'+ self.password +'\n'
+        return 'site :' + self.site +'\nsite :' + self.username +'\nlink :'+self.link + '\npassword :'+ self.password +'\n'
 
 
     def _encrypt_pw(self,key):
@@ -43,35 +44,61 @@ class Password:
 
 ##############  functions for the Gui  #########################
 
+
+### Passwords file
+
 def loading_pw(pathname='./',filename = 'mypw.pkl'):
     if os.path.isfile(os.path.join(pathname,filename) ):
-        with open('mypw.pkl','rb') as f:
+        with open('lyrics.pkl','rb') as f:
             pw_list = pickle.load(f)
         return pw_list
     else:
         return []
 
 
+def save_pw(pw_list,path = './',filename = 'lyrics.pkl'):
+    filen = os.path.join(path,filename)
+    try:
+        with open(filen,'wb') as f:
+            pickle.dump(pw_list,f,pickle.HIGHEST_PROTOCOL)
+            return 1
+    except:
+        print("Failed to save passwords")
+        return 0
+
+
+
 def add_pw(pw_list,password):
-    pw_list.append(password)     
+    pw_list.append(password)
     return pw_list
+     
+### config and globals
 
-def save_pw(pw_list):
-    with open('mypw.pkl','wb') as f:
-        pickle.dump(pw_list,f,pickle.HIGHEST_PROTOCOL)
+def load_config(pathname='./config',filename = 'config.pkl'):
+    filen = os.path.join(pathname,filename)
+    assert os.path.isfile(filen),"NoFileFound"
+
+    try:
+        with open(filen,'rb') as f :
+            list_config = pickle.load(f)
+            return list_config
+    except:
+        print('FailedToLoadConfig')
+        pass
+
+def save_config(list_config,filen = './config/config.pkl'):
+    res = 1
+    try:
+        with open(filen,'wb') as f :
+            pickle.dump(list_config,f,pickle.HIGHEST_PROTOCOL)
+    except:
+        print('FailedToSaveConfig')
+        res = 0
+    finally:
+        return res
+ 
         
-
-# def getHashedKey(dir = os.getcwd()):
-#     """
-#     Get the hashed key choosen at the begining
-#     """
-#     dir  = os.path.join(dir,'.config')
-#     with open(os.path.join(dir,'config_file.txt'),'w') as f:
-#         a = f.read()
-#     hashed_key = 'To be coded'
-#     return hashed_key        
-
-
+### Hash and Crypto func            
 
 def test_key(entry):
     """
@@ -95,6 +122,8 @@ def test_key(entry):
         return entry_hash
     
     return []
+
+
 
 
 
